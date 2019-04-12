@@ -5,6 +5,7 @@ var apiRouter   = require('./apiRouter').router;
 var cors = require('cors');
 var port = process.env.PORT || 8080;
 var multer =  require('multer');
+var path = require('path');
 
 //Instantiate server
 var server = express();
@@ -53,6 +54,11 @@ server.use(bodyParser.json());
 server.get('/', function(req, res) {
     res.setHeader('Content-Type', 'text/html');
     res.status(200).send('<h1>Bienvenue sur lAPI listoo</h1>');
+});
+
+server.get('/reset/:token', function(req, res) {
+  res.setHeader('Content-Type', 'text/html');
+  res.status(200).sendFile(path.join(__dirname + '/reset.html'));
 });
 server.use(cors());
 
