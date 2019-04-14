@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     desc: DataTypes.STRING,
     piUrl: DataTypes.STRING,
     price: DataTypes.FLOAT,
-    startHour: DataTypes.TIME,
-    endHour: DataTypes.TIME,
+    startHour: DataTypes.DATE,
+    endHour: DataTypes.DATE,
     qtite: DataTypes.INTEGER,
     isActive: DataTypes.BOOLEAN
   }, {});

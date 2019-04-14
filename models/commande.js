@@ -3,7 +3,9 @@ module.exports = (sequelize, DataTypes) => {
   const Commande = sequelize.define('Commande', {
     idUser: DataTypes.INTEGER,
     idAnnonce: DataTypes.INTEGER,
-    orderDateTime: DataTypes.DATE
+    orderDateTime: DataTypes.DATE,
+    qtite: DataTypes.INTEGER,
+    isRecup: DataTypes.BOOLEAN
   }, {});
   Commande.associate = function(models) {
     // associations can be defined here
