@@ -341,6 +341,28 @@ module.exports = {
       }).catch(function(err) {
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
+    },getUser: function(req, res) {
+      // Getting auth header
+      var headerAuth  = req.headers['authorization'];
+      var userId      = jwtUtils.getUserId(headerAuth);
+
+      var userToGet      = req.params.id;
+  
+      if (userId < 0)
+        return res.status(400).json({ 'error': 'wrong token' });
+  
+      models.User.findOne({
+        attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'zip', 'tel', 'age', 'restoName', 'restoType' ],
+        where: { id: userToGet }
+      }).then(function(user) {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(404).json({ 'error': 'user not found' });
+        }
+      }).catch(function(err) {
+        res.status(500).json({ 'error': 'cannot fetch user' });
+      });
     },
     updateProfile: function(req, res) {
       // Getting auth header
@@ -426,6 +448,7 @@ module.exports = {
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
               res.status(500).json({ 'error': 'Impossible' });
+              console.log(error);
             } else {
               res.status(201).json("Message envoyé");
             }
@@ -434,6 +457,7 @@ module.exports = {
           res.status(404).json({ 'error': 'user not found' });
         }
       }).catch(function(err) {
+        console.log(err);
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
     }

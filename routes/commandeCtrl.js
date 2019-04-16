@@ -6,10 +6,11 @@ var asyncLib  = require('async');
 //Routes
 
 module.exports = {
-    create: function(req, res,) {
+    create: function(req, res) {
 
         // Params
     var annonce = req.body.idAnnonce;
+    var qtitePanier = req.body.q;
     var orderDate = req.body.date;
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
@@ -23,10 +24,12 @@ module.exports = {
 
       asyncLib.waterfall([
         function(done) {
-          var newAnnonce = models.Commande.create({
+          var newCommande = models.Commande.create({
             idUser: userId,
             idAnnonce: annonce,
-            orderDateTime : orderDate
+            orderDateTime : orderDate,
+            isRecup : false,
+            qtite : qtitePanier
           })
           .then(function(newCommande) {
             done(newCommande);
@@ -41,7 +44,7 @@ module.exports = {
             'CommandeId': newCommande.id
           });
         } else {
-          return res.status(500).json({ 'error': 'cannot add annonce' });
+          return res.status(500).json({ 'error': 'cannot add annonce' });3570
         }
       });
   },
@@ -54,7 +57,7 @@ module.exports = {
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Commande.findAll({
-      attributes: ['id', 'idAnnonce', 'orderDateTime'],
+      attributes: ['id', 'idAnnonce', 'orderDateTime', 'isRecup', 'qtite'],
       where: { idUser : userId }
     }).then(function(commandes) {
       if (commandes) {
@@ -70,18 +73,27 @@ module.exports = {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
+    var todayStart = new Date();
+    var todayEnd = new Date();
+    todayStart.setHours(5);
+    todayStart.setMinutes(0);
+    todayEnd.setHours(23);
+    todayEnd.setMinutes(59);
 
     if (userId < 0)
       return res.status(400).json({ 'error': 'wrong token' });
 
       models.Annonce.findOne({
         attributes: ['id'],
-        where: { idRestoUser : userId }
+        where: { idRestoUser : userId}
       }).then(function(annonce) {
         if (annonce) {
           models.Commande.findAll({
-            attributes: ['id', 'idUser', 'orderDateTime'],
-            where: { idAnnonce : annonce["id"] }
+            attributes: ['id', 'idUser', 'orderDateTime', 'isRecup', 'qtite'],
+            where: { 
+              idAnnonce : annonce["id"],
+              orderDateTime: { between: [todayStart, todayEnd]},
+             }
           }).then(function(commandes) {
             if (commandes) {
               res.status(201).json(commandes);

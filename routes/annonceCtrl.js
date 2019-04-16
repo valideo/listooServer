@@ -6,7 +6,7 @@ var asyncLib  = require('async');
 //Routes
 
 module.exports = {
-    create: function(req, res,) {
+    create: function(req, res) {
 
         // Params
     var desc    = req.body.desc;

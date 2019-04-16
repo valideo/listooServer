@@ -15,6 +15,7 @@ exports.router = (function() {
     apiRouter.route('/users/loginResto/').post(usersCtrl.loginResto);
     apiRouter.route('/users/me/').get(usersCtrl.getProfile);
     apiRouter.route('/users/me/').put(usersCtrl.updateProfile);
+    apiRouter.route('/users/:id').get(usersCtrl.getUser);
     apiRouter.route('/users/resetPwd/').put(usersCtrl.updatePwd);
     apiRouter.route('/users/sendMail/').post(usersCtrl.sendMail);
 
