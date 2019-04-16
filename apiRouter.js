@@ -21,6 +21,7 @@ exports.router = (function() {
     //Annonces routes
     apiRouter.route('/annonce/create/').post(annoncesCtrl.create);
     apiRouter.route('/getAnnonce/').get(annoncesCtrl.getAnnonce);
+    apiRouter.route('/annonces/').get(annoncesCtrl.getAllAnnonces);
     apiRouter.route('/annonce/update/').put(annoncesCtrl.updateAnnonce);
     apiRouter.route('/annonce/updateState/').put(annoncesCtrl.updateState);
     apiRouter.route('/annonce/updateImg/').put(annoncesCtrl.updateImg);

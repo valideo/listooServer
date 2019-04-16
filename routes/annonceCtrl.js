@@ -96,6 +96,27 @@ module.exports = {
     }).catch(function(err) {
       res.status(500).json({ 'error': 'cannot fetch annonce' });
     });
+  },
+  getAllAnnonces: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+
+    if (userId < 0)
+      return res.status(400).json({ 'error': 'wrong token' });
+
+    models.Annonce.findAll({
+      attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
+      where: { isActive: true }
+    }).then(function(annonce) {
+      if (annonce) {
+        res.status(201).json(annonce);
+      } else {
+        res.status(404).json({ 'error': 'annonces not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch annonces' });
+    });
   },updateAnnonce: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];

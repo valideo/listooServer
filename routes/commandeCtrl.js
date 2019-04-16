@@ -11,6 +11,7 @@ module.exports = {
         // Params
     var annonce = req.body.idAnnonce;
     var orderDate = req.body.date;
+    var qtite = req.body.qtite;
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
 
@@ -26,7 +27,9 @@ module.exports = {
           var newAnnonce = models.Commande.create({
             idUser: userId,
             idAnnonce: annonce,
-            orderDateTime : orderDate
+            orderDateTime : orderDate,
+            qtite : qtite,
+            isRecup : false
           })
           .then(function(newCommande) {
             done(newCommande);
@@ -54,7 +57,7 @@ module.exports = {
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Commande.findAll({
-      attributes: ['id', 'idAnnonce', 'orderDateTime'],
+      attributes: ['id', 'idAnnonce', 'orderDateTime', 'qtite', 'isRecup'],
       where: { idUser : userId }
     }).then(function(commandes) {
       if (commandes) {
@@ -80,7 +83,7 @@ module.exports = {
       }).then(function(annonce) {
         if (annonce) {
           models.Commande.findAll({
-            attributes: ['id', 'idUser', 'orderDateTime'],
+            attributes: ['id', 'idUser', 'orderDateTime', 'qtite', 'isRecup'],
             where: { idAnnonce : annonce["id"] }
           }).then(function(commandes) {
             if (commandes) {
@@ -107,7 +110,7 @@ module.exports = {
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Commande.findAll({
-      attributes: ['id', 'idUser', 'idAnnonce', 'orderDateTime']
+      attributes: ['id', 'idUser', 'idAnnonce', 'orderDateTime', 'qtite', 'isRecup']
     }).then(function(commandes) {
       if (commandes) {
         res.status(201).json(commandes);
