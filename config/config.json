@@ -14,10 +14,10 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": "val2407entin",
-    "database": "listoo_prod",
-    "host": "127.0.0.1",
+    "username": "valideo",
+    "password": "Val2407entin",
+    "database": "listooAppBdd",
+    "host": "lg183999-001.dbaas.ovh.net",
     "dialect": "mysql"
   }
 }

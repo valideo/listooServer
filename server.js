@@ -69,5 +69,5 @@ server.use('/apiImg/', router);
 
 //Launch server
 server.listen(port, function(){
-    console.log('server listening');
+    console.log('server listening on port '+ port);
 });
