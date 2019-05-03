@@ -7,11 +7,24 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <link rel="icon" href="../uploads/favicon.ico" type="image/ico" sizes="64x64">
     <title>Listoo reset password</title>
   </head>
   <body style="text-align : center;">
-    <div class="container" style="padding-top : 20%">
+    <div class="alert alert-danger fade" id="emptyAlert" style="position : absolute; width : 100%" role="alert">
+        Les champs ne doivent pas être vides !
+    </div>
+    <div class="alert alert-danger fade" id="notEqualAlert" style="position : absolute; width : 100%" role="alert">
+        Les mots de passes ne correspondent pas.
+    </div>
+    <div class="alert alert-danger fade" id="errorAlert" style="position : absolute; width : 100%" role="alert">
+        Erreur lors de la modification du mot de passe.
+    </div>
+    <div class="alert alert-success fade" id="successAlert" style="position : absolute; width : 100%" role="alert">
+        Le mot de passe a bien été modifié.
+    </div>
+    <div class="container" style="padding-top : 10%">
+        <img src="../uploads/ListooLogo.png" style="width : 30%; padding-bottom : 5%"/>
         <div class="row">
             <div class="col-sm-12 col-md-2 col-lg-3 col-xl-3"></div>
             <div class="col-sm-12 col-md-8 col-lg-6 col-xl-6">
@@ -48,7 +61,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
      var token = window.location.pathname.split("/").pop();
-
      function submit(){
         var pwd = document.getElementById("pwd").value;
         var pwdConf = document.getElementById("pwdConf").value;
@@ -69,16 +81,40 @@
             });
             const content = await rawResponse.json();
 
-            console.log(content);
-            })();
+            console.log(content.error);
+            if(content.error != "" || content.error != null || content.error != undefined){
+                $('#errorAlert').addClass('show');
+                setTimeout(function (){
 
+                    $('#errorAlert').removeClass('show');
 
+                }, 3000); 
             }else{
-                window.alert("Les champs ne correspondent pas.");
+                $('#successAlert').addClass('show');
+                setTimeout(function (){
+
+                    $('#successAlert').removeClass('show');
+
+                }, 3000); 
+            }
+
+            })();
+            }else{
+                $('#notEqualAlert').addClass('show');
+                setTimeout(function (){
+
+                    $('#notEqualAlert').removeClass('show');
+
+                }, 3000); 
             }
 
         }else{
-            window.alert("Les champs ne doivent pas être vides !");
+            $('#emptyAlert').addClass('show');
+            setTimeout(function (){
+
+                $('#emptyAlert').removeClass('show');
+
+            }, 3000);
         }
      }
     </script>

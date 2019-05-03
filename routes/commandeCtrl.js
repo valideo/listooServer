@@ -53,12 +53,23 @@ module.exports = {
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
 
+    
+    var todayStart = new Date();
+    var todayEnd = new Date();
+    todayStart.setHours(5);
+    todayStart.setMinutes(0);
+    todayEnd.setHours(23);
+    todayEnd.setMinutes(59);
+
     if (userId < 0)
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Commande.findAll({
       attributes: ['id', 'idAnnonce', 'orderDateTime', 'isRecup', 'qtite'],
-      where: { idUser : userId }
+      where: {
+         idUser : userId,
+         orderDateTime: { between: [todayStart, todayEnd]},
+      }
     }).then(function(commandes) {
       if (commandes) {
         res.status(201).json(commandes);
@@ -110,6 +121,37 @@ module.exports = {
         res.status(500).json({ 'error': 'cannot fetch annonce' });
       });
   },
+  getCommandesByAnnonce: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+    var annonceId = req.params.id;
+    var todayStart = new Date();
+    var todayEnd = new Date();
+    todayStart.setHours(5);
+    todayStart.setMinutes(0);
+    todayEnd.setHours(23);
+    todayEnd.setMinutes(59);
+
+    if (userId < 0)
+      return res.status(400).json({ 'error': 'wrong token' });
+
+    models.Commande.findAll({
+      attributes: ['id', 'idUser', 'orderDateTime', 'isRecup', 'qtite'],
+      where: { 
+        idAnnonce : annonceId,
+        orderDateTime: { between: [todayStart, todayEnd]},
+        }
+    }).then(function(commandes) {
+      if (commandes) {
+        res.status(201).json(commandes);
+      } else {
+        res.status(404).json({ 'error': 'commandes not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch commandes' });
+    });
+  },
   getAllCommandes: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
@@ -119,7 +161,7 @@ module.exports = {
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Commande.findAll({
-      attributes: ['id', 'idUser', 'idAnnonce', 'orderDateTime']
+      attributes: ['id', 'idUser', 'idAnnonce', 'orderDateTime', 'qtite', 'isRecup']
     }).then(function(commandes) {
       if (commandes) {
         res.status(201).json(commandes);
@@ -128,6 +170,50 @@ module.exports = {
       }
     }).catch(function(err) {
       res.status(500).json({ 'error': 'cannot fetch commandes' });
+    });
+  }, updateState: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+
+    if (userId < 0)
+      return res.status(400).json({ 'error': 'wrong token' });
+
+    // Params
+    var isRecup = req.body.isRecup;
+    var orderId = req.body.orderId
+
+    asyncLib.waterfall([
+      function(done) {
+        models.Commande.findOne({
+          attributes: ['id'],
+          where: { id: orderId }
+        }).then(function (commandeFound) {
+          done(null, commandeFound);
+        })
+        .catch(function(err) {
+          return res.status(500).json({ 'error': 'unable to verify commandeFound' });
+        });
+      },
+      function(commandeFound, done) {
+        if(commandeFound) {
+          commandeFound.update({
+            isRecup: isRecup
+          }).then(function() {
+            done(commandeFound);
+          }).catch(function(err) {
+            res.status(500).json({ 'error': 'cannot update commande' });
+          });
+        } else {
+          res.status(404).json({ 'error': 'commande not found' });
+        }
+      },
+    ], function(commandeFound) {
+      if (commandeFound) {
+        return res.status(201).json(commandeFound);
+      } else {
+        return res.status(500).json({ 'error': 'cannot update commande' });
+      }
     });
   }
 }

@@ -273,6 +273,44 @@ module.exports = {
           return res.status(500).json({ 'error': 'cannot log on user' });
         }
       });
+    },loginUserFB: function(req, res) {
+    
+      // Params
+      var email    = req.body.email;
+  
+      if (email == null  || email == "") {
+        return res.status(400).json({ 'error': 'missing parameters' });
+      }
+  
+      asyncLib.waterfall([
+        function(done) {
+          models.User.findOne({
+            where: { email: email, isResto: false }
+          })
+          .then(function(userFound) {
+            done(null, userFound);
+          })
+          .catch(function(err) {
+            return res.status(500).json({ 'error': 'unable to verify user' });
+          });
+        },
+        function(userFound, done) {
+          if (userFound) {
+            done(userFound)
+          } else {
+            return res.status(404).json({ 'error': 'user not exist in DB' });
+          }
+        }
+      ], function(userFound) {
+        if (userFound) {
+          return res.status(201).json({
+            'userId': userFound.id,
+            'token': jwtUtils.generateTokenForUser(userFound)
+          });
+        } else {
+          return res.status(500).json({ 'error': 'cannot log on user' });
+        }
+      });
     },loginResto: function(req, res) {
     
       // Params

@@ -12,6 +12,7 @@ exports.router = (function() {
     apiRouter.route('/users/registerUser/').post(usersCtrl.registerUser);
     apiRouter.route('/users/registerResto/').post(usersCtrl.registerResto);
     apiRouter.route('/users/loginUser/').post(usersCtrl.loginUser);
+    apiRouter.route('/users/loginUserFB/').post(usersCtrl.loginUserFB);
     apiRouter.route('/users/loginResto/').post(usersCtrl.loginResto);
     apiRouter.route('/users/me/').get(usersCtrl.getProfile);
     apiRouter.route('/users/me/').put(usersCtrl.updateProfile);
@@ -22,6 +23,8 @@ exports.router = (function() {
     //Annonces routes
     apiRouter.route('/annonce/create/').post(annoncesCtrl.create);
     apiRouter.route('/getAnnonce/').get(annoncesCtrl.getAnnonce);
+    apiRouter.route('/annonce/:id').get(annoncesCtrl.getAnnonceById);
+    apiRouter.route('/annonces/').get(annoncesCtrl.getAllAnnonces);
     apiRouter.route('/annonce/update/').put(annoncesCtrl.updateAnnonce);
     apiRouter.route('/annonce/updateState/').put(annoncesCtrl.updateState);
     apiRouter.route('/annonce/updateImg/').put(annoncesCtrl.updateImg);
@@ -31,7 +34,9 @@ exports.router = (function() {
     apiRouter.route('/commande/create/').post(commandesCtrl.create);
     apiRouter.route('/commandes/user/').get(commandesCtrl.getCommandesByUser);
     apiRouter.route('/commandes/resto/').get(commandesCtrl.getCommandesByResto);
+    apiRouter.route('/commandes/:id').get(commandesCtrl.getCommandesByAnnonce);
     apiRouter.route('/commandes/').get(commandesCtrl.getAllCommandes);
+    apiRouter.route('/commande/state').put(commandesCtrl.updateState);
   
     return apiRouter;
   })();
