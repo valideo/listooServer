@@ -17,6 +17,7 @@ exports.router = (function() {
     apiRouter.route('/users/me/').get(usersCtrl.getProfile);
     apiRouter.route('/users/me/').put(usersCtrl.updateProfile);
     apiRouter.route('/users/:id').get(usersCtrl.getUser);
+    apiRouter.route('/users/filter/:searchString').get(usersCtrl.loadRestoWithFilter);
     apiRouter.route('/users/resetPwd/').put(usersCtrl.updatePwd);
     apiRouter.route('/users/sendMail/').post(usersCtrl.sendMail);
 
@@ -24,6 +25,7 @@ exports.router = (function() {
     apiRouter.route('/annonce/create/').post(annoncesCtrl.create);
     apiRouter.route('/getAnnonce/').get(annoncesCtrl.getAnnonce);
     apiRouter.route('/annonce/:id').get(annoncesCtrl.getAnnonceById);
+    apiRouter.route('/annonce/resto/:id').get(annoncesCtrl.getAnnonceByResto);
     apiRouter.route('/annonces/').get(annoncesCtrl.getAllAnnonces);
     apiRouter.route('/annonce/update/').put(annoncesCtrl.updateAnnonce);
     apiRouter.route('/annonce/updateState/').put(annoncesCtrl.updateState);

@@ -499,5 +499,33 @@ module.exports = {
         console.log(err);
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
+    },loadRestoWithFilter: function(req, res) {
+      // Getting auth header
+      var headerAuth  = req.headers['authorization'];
+      var userId      = jwtUtils.getUserId(headerAuth);
+  
+      if (userId < 0)
+        return res.status(400).json({ 'error': 'wrong token' });
+  
+      var searchQuery = "";
+      if(req.params.searchString != null && req.params.searchString != undefined)
+        searchQuery = req.params.searchString;
+  
+      models.User.findAll({
+        attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'zip', 'tel', 'age', 'restoName', 'restoType' ],
+        where: { 
+          isResto: true,
+          restoName : {$like: '%'+searchQuery+"%"}
+         }
+      }).then(function(user) {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(404).json({ 'error': 'user not found' });
+        }
+      }).catch(function(err) {
+        res.status(500).json({ 'error': 'cannot fetch user' });
+        console.log(err);
+      });
     }
   }

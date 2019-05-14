@@ -18,7 +18,7 @@
     "password": "Val2407entin",
     "database": "listooAppBDD",
     "host": "lg183999-001.dbaas.ovh.net",
-    "dialect": "mysql", 
+    "dialect": "mysql",
     "port": "35189"
   }
 }
