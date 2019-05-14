@@ -49,8 +49,9 @@ module.exports = {
                 done(null, userFound);
               })
               .catch(function(err) {
-                return res.status(500).json({ 'error': 'unable to verify user' });
-              });
+                return res.status(500).json({ 'error': err });
+
+                    });
             },
             function(userFound, done) {
               if (!userFound) {
