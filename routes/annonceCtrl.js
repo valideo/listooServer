@@ -221,6 +221,7 @@ module.exports = {
             done(annonceFound);
           }).catch(function(err) {
             res.status(500).json({ 'error': 'cannot update annonce' });
+            console.log(err);
           });
         } else {
           res.status(404).json({ 'error': 'annonce not found' });

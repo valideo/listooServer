@@ -481,7 +481,7 @@ module.exports = {
             from: '"Listoo" <noreply@listoo.com>', // sender address
             to: user.email, // list of receivers
             subject: "Réinitialisation de mot de passe Listoo", // Subject line
-            text: "Lien pour réinitialiser votre mot de passe : http://5.51.150.55:8080/reset/"+token, // plain text body
+            text: "Lien pour réinitialiser votre mot de passe : http://api.listoo.co/reset/"+token, // plain text body
           };
           transporter.sendMail(mailOptions, function(error, info){
             if (error) {
