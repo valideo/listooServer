@@ -117,18 +117,62 @@ module.exports = {
     }).catch(function(err) {
       res.status(500).json({ 'error': 'cannot fetch annonce' });
     });
+  }, getAnnonceByResto: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+    var annonceId = req.params.id;
+
+    var todayStart = new Date();
+    var todayEnd = new Date();
+    todayStart.setHours(5);
+    todayStart.setMinutes(0);
+    todayEnd.setHours(23);
+    todayEnd.setMinutes(59);
+
+    if (userId < 0)
+      return res.status(400).json({ 'error': 'wrong token' });
+
+    models.Annonce.findOne({
+      attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
+      where: { 
+        idRestoUser: annonceId,
+        isActive: true,
+        startHour: { gt: todayStart},
+        endHour : {lt: todayEnd}
+       }
+    }).then(function(annonce) {
+      if (annonce) {
+        res.status(201).json(annonce);
+      } else {
+        res.status(404).json({ 'error': 'annonce not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch annonce' });
+    });
   },
   getAllAnnonces: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
 
+    var todayStart = new Date();
+    var todayEnd = new Date();
+    todayStart.setHours(5);
+    todayStart.setMinutes(0);
+    todayEnd.setHours(23);
+    todayEnd.setMinutes(59);
+
     if (userId < 0)
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Annonce.findAll({
       attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
-      where: { isActive: true }
+      where: { 
+        isActive: true,
+        startHour: { gt: todayStart},
+        endHour : {lt: todayEnd}
+      }
     }).then(function(annonce) {
       if (annonce) {
         res.status(201).json(annonce);
@@ -177,6 +221,7 @@ module.exports = {
             done(annonceFound);
           }).catch(function(err) {
             res.status(500).json({ 'error': 'cannot update annonce' });
+            console.log(err);
           });
         } else {
           res.status(404).json({ 'error': 'annonce not found' });
