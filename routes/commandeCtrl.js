@@ -215,5 +215,53 @@ module.exports = {
         return res.status(500).json({ 'error': 'cannot update commande' });
       }
     });
+  },getAllCommandesAdmin: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+
+    if (userId != -100)
+      return res.status(400).json({ 'error': 'wrong Admin token' });
+
+    models.Commande.findAll({
+      attributes: ['id', 'idUser', 'idAnnonce', 'orderDateTime', 'qtite', 'isRecup']
+    }).then(function(commandes) {
+      if (commandes) {
+        res.status(201).json(commandes);
+      } else {
+        res.status(404).json({ 'error': 'commandes not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch commandes' });
+    });
+  },getAllNewCommandesAdmin: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+
+    if (userId != -100)
+      return res.status(400).json({ 'error': 'wrong Admin token' });
+
+    var todayStart = new Date();
+    var todayEnd = new Date();
+    todayStart.setHours(1);
+    todayStart.setMinutes(0);
+    todayEnd.setHours(23);
+    todayEnd.setMinutes(59);
+
+    models.Commande.findAll({
+      attributes: ['id', 'idUser', 'idAnnonce', 'orderDateTime', 'qtite', 'isRecup'],
+      where : {
+        createdAt: {between: [todayStart, todayEnd]}
+      }
+    }).then(function(commandes) {
+      if (commandes) {
+        res.status(201).json(commandes);
+      } else {
+        res.status(404).json({ 'error': 'commandes not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch commandes' });
+    });
   }
 }

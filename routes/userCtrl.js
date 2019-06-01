@@ -183,6 +183,7 @@ module.exports = {
           done(null, userFound);
         })
         .catch(function(err) {
+          console.log(err);
           return res.status(500).json({ 'error': 'unable to verify user' });
         });
       },
@@ -214,6 +215,7 @@ module.exports = {
           done(newUser);
         })
         .catch(function(err) {
+          console.log(err);
           return res.status(500).json({ 'error': 'cannot add user' });
         });
       }
@@ -223,6 +225,7 @@ module.exports = {
           'userId': newUser.id
         });
       } else {
+        console.log("connot add user")
         return res.status(500).json({ 'error': 'cannot add user' });
       }
     });
@@ -360,6 +363,58 @@ module.exports = {
           return res.status(500).json({ 'error': 'cannot log on user' });
         }
       });
+    },loginAdmin: function(req, res) {
+    
+      // Params
+      var email    = req.body.email;
+      var password = req.body.password;
+  
+      if (email == null ||  password == null || email == "" ||  password == "") {
+        return res.status(400).json({ 'error': 'missing parameters' });
+      }
+
+      if(email == "admin@listoo.co"){
+      asyncLib.waterfall([
+        function(done) {
+          models.User.findOne({
+            where: { email: "admin@listoo.co"}
+          })
+          .then(function(userFound) {
+            done(null, userFound);
+          })
+          .catch(function(err) {
+            return res.status(500).json({ 'error': 'unable to verify user' });
+          });
+        },
+        function(userFound, done) {
+          if (userFound) {
+            bcrypt.compare(password, userFound.password, function(errBycrypt, resBycrypt) {
+              done(null, userFound, resBycrypt);
+            });
+          } else {
+            return res.status(404).json({ 'error': 'user not exist in DB' });
+          }
+        },
+        function(userFound, resBycrypt, done) {
+          if(resBycrypt) {
+            done(userFound);
+          } else {
+            return res.status(403).json({ 'error': 'invalid password' });
+          }
+        }
+      ], function(userFound) {
+        if (userFound) {
+          return res.status(201).json({
+            'userId': userFound.id,
+            'token': jwtUtils.generateTokenForUser(userFound)
+          });
+        } else {
+          return res.status(500).json({ 'error': 'cannot log on user' });
+        }
+      });
+    }else{
+      return res.status(400).json({ 'error': 'not admin' });
+    }
     },getProfile: function(req, res) {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
@@ -526,6 +581,107 @@ module.exports = {
       }).catch(function(err) {
         res.status(500).json({ 'error': 'cannot fetch user' });
         console.log(err);
+      });
+    },getAllUsers: function(req, res) {
+      // Getting auth header
+      var headerAuth  = req.headers['authorization'];
+      var userId      = jwtUtils.getUserId(headerAuth);
+  
+      if (userId != -100)
+        return res.status(400).json({ 'error': 'wrong adminToken' });
+  
+      models.User.findAll({
+        attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'age', 'createdAt'  ],
+        where: {  isResto: false }
+      }).then(function(user) {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(404).json({ 'error': 'users not found' });
+        }
+      }).catch(function(err) {
+        res.status(500).json({ 'error': 'cannot fetch users' });
+      });
+    },getAllNewUsers: function(req, res) {
+      // Getting auth header
+      var headerAuth  = req.headers['authorization'];
+      var userId      = jwtUtils.getUserId(headerAuth);
+      
+
+      var todayStart = new Date();
+      var todayEnd = new Date();
+      todayStart.setHours(1);
+      todayStart.setMinutes(0);
+      todayEnd.setHours(23);
+      todayEnd.setMinutes(59);
+  
+      if (userId != -100)
+        return res.status(400).json({ 'error': 'wrong adminToken' });
+  
+      models.User.findAll({
+        attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'age', 'createdAt' ],
+        where: {  
+          isResto: false,
+          createdAt: {between: [todayStart, todayEnd]},
+        }
+      }).then(function(user) {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(404).json({ 'error': 'users not found' });
+        }
+      }).catch(function(err) {
+        res.status(500).json({ 'error': 'cannot fetch users' });
+      });
+    },getAllRestos: function(req, res) {
+      // Getting auth header
+      var headerAuth  = req.headers['authorization'];
+      var userId      = jwtUtils.getUserId(headerAuth);
+
+      if (userId != -100)
+        return res.status(400).json({ 'error': 'wrong adminToken' });
+  
+      models.User.findAll({
+        attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'restoName', 'restoType', 'createdAt'  ],
+        where: {  isResto: true }
+      }).then(function(user) {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(404).json({ 'error': 'users not found' });
+        }
+      }).catch(function(err) {
+        res.status(500).json({ 'error': 'cannot fetch users' });
+      });
+    },getAllNewRestos: function(req, res) {
+      // Getting auth header
+      var headerAuth  = req.headers['authorization'];
+      var userId      = jwtUtils.getUserId(headerAuth);
+
+      if (userId != -100)
+        return res.status(400).json({ 'error': 'wrong adminToken' });
+
+      var todayStart = new Date();
+      var todayEnd = new Date();
+      todayStart.setHours(1);
+      todayStart.setMinutes(0);
+      todayEnd.setHours(23);
+      todayEnd.setMinutes(59);
+  
+      models.User.findAll({
+        attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'restoName', 'restoType', 'createdAt'  ],
+        where: {  
+          isResto: true,
+          createdAt: {between: [todayStart, todayEnd]},
+        }
+      }).then(function(user) {
+        if (user) {
+          res.status(201).json(user);
+        } else {
+          res.status(404).json({ 'error': 'users not found' });
+        }
+      }).catch(function(err) {
+        res.status(500).json({ 'error': 'cannot fetch users' });
       });
     }
   }
