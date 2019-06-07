@@ -125,8 +125,8 @@ module.exports = {
 
     var todayStart = new Date();
     var todayEnd = new Date();
-    todayStart.setHours(5);
-    todayStart.setMinutes(0);
+    todayStart.setHours(0);
+    todayStart.setMinutes(1);
     todayEnd.setHours(23);
     todayEnd.setMinutes(59);
 
@@ -158,8 +158,8 @@ module.exports = {
 
     var todayStart = new Date();
     var todayEnd = new Date();
-    todayStart.setHours(5);
-    todayStart.setMinutes(0);
+    todayStart.setHours(0);
+    todayStart.setMinutes(1);
     todayEnd.setHours(23);
     todayEnd.setMinutes(59);
 
