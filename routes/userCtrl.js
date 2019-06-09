@@ -35,9 +35,9 @@ module.exports = {
             return res.status(400).json({ 'error': 'email is not valid' });
           }
       
-          if (!PASSWORD_REGEX.test(password)) {
+        /* if (!PASSWORD_REGEX.test(password)) {
             return res.status(400).json({ 'error': 'password invalid (must length 4 - 8 and include 1 number at least)' });
-          }
+          }*/
 
           asyncLib.waterfall([
             function(done) {
@@ -101,9 +101,9 @@ module.exports = {
         // Params
     var password = req.body.password;
   
-      if (!PASSWORD_REGEX.test(password)) {
+     /* if (!PASSWORD_REGEX.test(password)) {
         return res.status(400).json({ 'error': 'password invalid (must length 4 - 8 and include 1 number at least)' });
-      }
+      }*/
 
       asyncLib.waterfall([
         function(done) {
@@ -169,9 +169,9 @@ module.exports = {
       return res.status(400).json({ 'error': 'email is not valid' });
     }
 
-    if (!PASSWORD_REGEX.test(password)) {
+   /* if (!PASSWORD_REGEX.test(password)) {
       return res.status(400).json({ 'error': 'password invalid (must length 4 - 8 and include 1 number at least)' });
-    }
+    }*/
 
     asyncLib.waterfall([
       function(done) {
