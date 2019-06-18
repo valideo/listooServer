@@ -321,5 +321,28 @@ module.exports = {
         return res.status(500).json({ 'error': 'cannot update annonce' });
       }
     });
+  }, getAnnonceByRestoAdmin: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+    var annonceId = req.params.id;
+
+    if (userId != -100)
+      return res.status(400).json({ 'error': 'wrong Admintoken' });
+
+    models.Annonce.findOne({
+      attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
+      where: { 
+        idRestoUser: annonceId
+       }
+    }).then(function(annonce) {
+      if (annonce) {
+        res.status(201).json(annonce);
+      } else {
+        res.status(404).json({ 'error': 'annonce not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch annonce' });
+    });
   }
 }

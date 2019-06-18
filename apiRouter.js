@@ -45,6 +45,7 @@ exports.router = (function() {
     apiRouter.route('/users/newRestos/').get(usersCtrl.getAllNewRestos);
     apiRouter.route('/commandes/all/').get(commandesCtrl.getAllCommandesAdmin);
     apiRouter.route('/commandes/new/').get(commandesCtrl.getAllNewCommandesAdmin);
+    apiRouter.route('/annonce/resto/admin/:id').get(annoncesCtrl.getAnnonceByRestoAdmin);
 
 
     apiRouter.route('/users/:id').get(usersCtrl.getUser); //(\d+)
