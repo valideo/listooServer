@@ -129,8 +129,9 @@ module.exports = {
     todayStart.setMinutes(1);
     todayEnd.setHours(23);
     todayEnd.setMinutes(59);
+    console.log(userId);
 
-    if (userId < 0)
+    if (userId < 0 && userId != -100)
       return res.status(400).json({ 'error': 'wrong token' });
 
     models.Annonce.findOne({

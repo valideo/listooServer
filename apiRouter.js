@@ -16,7 +16,6 @@ exports.router = (function() {
     apiRouter.route('/users/loginResto/').post(usersCtrl.loginResto);
     apiRouter.route('/users/me/').get(usersCtrl.getProfile);
     apiRouter.route('/users/me/').put(usersCtrl.updateProfile);
-    apiRouter.route('/users/:id(\d+)').get(usersCtrl.getUser);
     apiRouter.route('/users/filter/:searchString').get(usersCtrl.loadRestoWithFilter);
     apiRouter.route('/users/resetPwd/').put(usersCtrl.updatePwd);
     apiRouter.route('/users/sendMail/').post(usersCtrl.sendMail);
@@ -24,8 +23,6 @@ exports.router = (function() {
     //Annonces routes
     apiRouter.route('/annonce/create/').post(annoncesCtrl.create);
     apiRouter.route('/getAnnonce/').get(annoncesCtrl.getAnnonce);
-    apiRouter.route('/annonce/:id').get(annoncesCtrl.getAnnonceById);
-    apiRouter.route('/annonce/resto/:id(\d+)').get(annoncesCtrl.getAnnonceByResto);
     apiRouter.route('/annonces/').get(annoncesCtrl.getAllAnnonces);
     apiRouter.route('/annonce/update/').put(annoncesCtrl.updateAnnonce);
     apiRouter.route('/annonce/updateState/').put(annoncesCtrl.updateState);
@@ -36,19 +33,27 @@ exports.router = (function() {
     apiRouter.route('/commande/create/').post(commandesCtrl.create);
     apiRouter.route('/commandes/user/').get(commandesCtrl.getCommandesByUser);
     apiRouter.route('/commandes/resto/').get(commandesCtrl.getCommandesByResto);
-    apiRouter.route('/commandes/:id(\d+)').get(commandesCtrl.getCommandesByAnnonce);
     apiRouter.route('/commandes/').get(commandesCtrl.getAllCommandes);
     apiRouter.route('/commande/state').put(commandesCtrl.updateState);
 
 
     //For Admin
     apiRouter.route('/loginAdmin/').post(usersCtrl.loginAdmin);
-    apiRouter.route('/users/all/').get(usersCtrl.getAllUsers);
+    apiRouter.route('/users/all').get(usersCtrl.getAllUsers);
     apiRouter.route('/users/new/').get(usersCtrl.getAllNewUsers);
     apiRouter.route('/users/allRestos/').get(usersCtrl.getAllRestos);
     apiRouter.route('/users/newRestos/').get(usersCtrl.getAllNewRestos);
     apiRouter.route('/commandes/all/').get(commandesCtrl.getAllCommandesAdmin);
     apiRouter.route('/commandes/new/').get(commandesCtrl.getAllNewCommandesAdmin);
+
+
+    apiRouter.route('/users/:id').get(usersCtrl.getUser); //(\d+)
+    
+    apiRouter.route('/annonce/:id').get(annoncesCtrl.getAnnonceById);
+    
+    apiRouter.route('/commandes/:id').get(commandesCtrl.getCommandesByAnnonce); //(\d+)
+    
+    apiRouter.route('/annonce/resto/:id').get(annoncesCtrl.getAnnonceByResto); //(\d+)
   
     return apiRouter;
   })();

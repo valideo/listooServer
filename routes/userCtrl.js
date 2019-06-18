@@ -442,7 +442,7 @@ module.exports = {
 
       var userToGet      = req.params.id;
   
-      if (userId < 0)
+      if (userId < 0 && userId != -100)
         return res.status(400).json({ 'error': 'wrong token' });
   
       models.User.findOne({
@@ -586,6 +586,8 @@ module.exports = {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
+
+      console.log(userId);
   
       if (userId != -100)
         return res.status(400).json({ 'error': 'wrong adminToken' });
