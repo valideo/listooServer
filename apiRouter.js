@@ -53,6 +53,8 @@ exports.router = (function() {
     apiRouter.route('/annonce/:id').get(annoncesCtrl.getAnnonceById);
     
     apiRouter.route('/commandes/:id').get(commandesCtrl.getCommandesByAnnonce); //(\d+)
+
+    apiRouter.route('/commandes/user/:id').get(commandesCtrl.getCommandesByUserAdmin); //(\d+)
     
     apiRouter.route('/annonce/resto/:id').get(annoncesCtrl.getAnnonceByResto); //(\d+)
   

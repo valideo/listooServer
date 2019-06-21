@@ -263,5 +263,29 @@ module.exports = {
     }).catch(function(err) {
       res.status(500).json({ 'error': 'cannot fetch commandes' });
     });
+  },
+  getCommandesByUserAdmin: function(req, res) {
+    // Getting auth header
+    var headerAuth  = req.headers['authorization'];
+    var userId      = jwtUtils.getUserId(headerAuth);
+    var idToCheck   = req.params.id;
+
+    if (userId != -100)
+      return res.status(400).json({ 'error': 'wrong Admintoken' });
+
+    models.Commande.findAll({
+      attributes: ['id', 'idAnnonce', 'orderDateTime', 'isRecup', 'qtite'],
+      where: {
+         idUser : idToCheck
+      }
+    }).then(function(commandes) {
+      if (commandes) {
+        res.status(201).json(commandes);
+      } else {
+        res.status(404).json({ 'error': 'commandes not found' });
+      }
+    }).catch(function(err) {
+      res.status(500).json({ 'error': 'cannot fetch commandes' });
+    });
   }
 }
