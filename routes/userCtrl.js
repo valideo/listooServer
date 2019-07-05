@@ -30,11 +30,11 @@ module.exports = {
         if (email == null || password == null || fName == null || sName == null || tel == null || city == null || zip == null || address == null || age == null) {
             return res.status(400).json({ 'error': 'missing parameters' });
           }
-      
+
           if (!EMAIL_REGEX.test(email)) {
             return res.status(400).json({ 'error': 'email is not valid' });
           }
-      
+
         /* if (!PASSWORD_REGEX.test(password)) {
             return res.status(400).json({ 'error': 'password invalid (must length 4 - 8 and include 1 number at least)' });
           }*/
@@ -100,7 +100,7 @@ module.exports = {
     var userId      = jwtUtils.getUserId(headerAuth);
         // Params
     var password = req.body.password;
-  
+
      /* if (!PASSWORD_REGEX.test(password)) {
         return res.status(400).json({ 'error': 'password invalid (must length 4 - 8 and include 1 number at least)' });
       }*/
@@ -230,15 +230,15 @@ module.exports = {
       }
     });
 },loginUser: function(req, res) {
-    
+
       // Params
       var email    = req.body.email;
       var password = req.body.password;
-  
-      if (email == null ||  password == null || email == "" ||  password == "") {
+
+      if (email == null ||  password == null || email === "" ||  password === "") {
         return res.status(400).json({ 'error': 'missing parameters' });
       }
-  
+
       asyncLib.waterfall([
         function(done) {
           models.User.findOne({
@@ -278,14 +278,14 @@ module.exports = {
         }
       });
     },loginUserFB: function(req, res) {
-    
+
       // Params
       var email    = req.body.email;
-  
-      if (email == null  || email == "") {
+
+      if (email == null  || email === "") {
         return res.status(400).json({ 'error': 'missing parameters' });
       }
-  
+
       asyncLib.waterfall([
         function(done) {
           models.User.findOne({
@@ -316,15 +316,15 @@ module.exports = {
         }
       });
     },loginResto: function(req, res) {
-    
+
       // Params
       var email    = req.body.email;
       var password = req.body.password;
-  
-      if (email == null ||  password == null || email == "" ||  password == "") {
+
+      if (email == null ||  password == null || email === "" ||  password === "") {
         return res.status(400).json({ 'error': 'missing parameters' });
       }
-  
+
       asyncLib.waterfall([
         function(done) {
           models.User.findOne({
@@ -364,16 +364,16 @@ module.exports = {
         }
       });
     },loginAdmin: function(req, res) {
-    
+
       // Params
       var email    = req.body.email;
       var password = req.body.password;
-  
-      if (email == null ||  password == null || email == "" ||  password == "") {
+
+      if (email == null ||  password == null || email === "" ||  password === "") {
         return res.status(400).json({ 'error': 'missing parameters' });
       }
 
-      if(email == "admin@listoo.co"){
+      if(email === "admin@listoo.co"){
       asyncLib.waterfall([
         function(done) {
           models.User.findOne({
@@ -419,10 +419,10 @@ module.exports = {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
-  
+
       if (userId < 0)
         return res.status(400).json({ 'error': 'wrong token' });
-  
+
       models.User.findOne({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'zip', 'tel', 'age', 'restoName', 'restoType' ],
         where: { id: userId }
@@ -435,16 +435,18 @@ module.exports = {
       }).catch(function(err) {
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
-    },getUser: function(req, res) {
+    },
+
+  getUser: function(req, res) {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
 
       var userToGet      = req.params.id;
-  
-      if (userId < 0 && userId != -100)
-        return res.status(400).json({ 'error': 'wrong token' });
-  
+
+      // if (userId < 0 && userId !== -100)
+      //   return res.status(400).json({ 'error': 'wrong token' });
+
       models.User.findOne({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'zip', 'tel', 'age', 'restoName', 'restoType' ],
         where: { id: userToGet }
@@ -458,11 +460,12 @@ module.exports = {
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
     },
-    updateProfile: function(req, res) {
+
+  updateProfile: function(req, res) {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
-  
+
       // Params
       var email = req.body.email;
       var sName = req.body.sName;
@@ -474,7 +477,7 @@ module.exports = {
       var age = req.body.age;
       var restoName = req.body.restoName;
       var restoType = req.body.restoType;
-  
+
       asyncLib.waterfall([
         function(done) {
           models.User.findOne({
@@ -554,21 +557,23 @@ module.exports = {
         console.log(err);
         res.status(500).json({ 'error': 'cannot fetch user' });
       });
-    },loadRestoWithFilter: function(req, res) {
+    },
+
+  loadRestoWithFilter: function(req, res) {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
-  
-      if (userId < 0)
-        return res.status(400).json({ 'error': 'wrong token' });
-  
+
+      // if (userId < 0)
+      //   return res.status(400).json({ 'error': 'wrong token' });
+
       var searchQuery = "";
-      if(req.params.searchString != null && req.params.searchString != undefined)
+      if(req.params.searchString !== null)
         searchQuery = req.params.searchString;
-  
+
       models.User.findAll({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'zip', 'tel', 'age', 'restoName', 'restoType' ],
-        where: { 
+        where: {
           isResto: true,
           restoName : {$like: '%'+searchQuery+"%"}
          }
@@ -588,10 +593,10 @@ module.exports = {
       var userId      = jwtUtils.getUserId(headerAuth);
 
       console.log(userId);
-  
-      if (userId != -100)
+
+      if (userId !== -100)
         return res.status(400).json({ 'error': 'wrong adminToken' });
-  
+
       models.User.findAll({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'age', 'createdAt'  ],
         where: {  isResto: false }
@@ -608,7 +613,7 @@ module.exports = {
       // Getting auth header
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
-      
+
 
       var todayStart = new Date();
       var todayEnd = new Date();
@@ -616,13 +621,13 @@ module.exports = {
       todayStart.setMinutes(0);
       todayEnd.setHours(23);
       todayEnd.setMinutes(59);
-  
-      if (userId != -100)
+
+      if (userId !== -100)
         return res.status(400).json({ 'error': 'wrong adminToken' });
-  
+
       models.User.findAll({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'age', 'createdAt' ],
-        where: {  
+        where: {
           isResto: false,
           createdAt: {between: [todayStart, todayEnd]},
         }
@@ -640,9 +645,9 @@ module.exports = {
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
 
-      if (userId != -100)
+      if (userId !== -100)
         return res.status(400).json({ 'error': 'wrong adminToken' });
-  
+
       models.User.findAll({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'restoName', 'restoType', 'createdAt'  ],
         where: {  isResto: true }
@@ -660,7 +665,7 @@ module.exports = {
       var headerAuth  = req.headers['authorization'];
       var userId      = jwtUtils.getUserId(headerAuth);
 
-      if (userId != -100)
+      if (userId !== -100)
         return res.status(400).json({ 'error': 'wrong adminToken' });
 
       var todayStart = new Date();
@@ -669,10 +674,10 @@ module.exports = {
       todayStart.setMinutes(0);
       todayEnd.setHours(23);
       todayEnd.setMinutes(59);
-  
+
       models.User.findAll({
         attributes: [ 'id', 'email', 'sName', 'fName', 'address', 'city', 'tel', 'restoName', 'restoType', 'createdAt'  ],
-        where: {  
+        where: {
           isResto: true,
           createdAt: {between: [todayStart, todayEnd]},
         }

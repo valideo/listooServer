@@ -38,7 +38,7 @@ module.exports = {
           })
           .catch(function(err) {
             return res.status(500).json({ 'error': 'unable to verify annonce' });
-            
+
           });
         },
         function(annonceFound, done) {
@@ -96,14 +96,16 @@ module.exports = {
     }).catch(function(err) {
       res.status(500).json({ 'error': 'cannot fetch annonce' });
     });
-  }, getAnnonceById: function(req, res) {
+  },
+
+  getAnnonceById: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
     var annonceId = req.params.id;
 
-    if (userId < 0)
-      return res.status(400).json({ 'error': 'wrong token' });
+    // if (userId < 0)
+    //   return res.status(400).json({ 'error': 'wrong token' });
 
     models.Annonce.findOne({
       attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
@@ -136,7 +138,7 @@ module.exports = {
 
     models.Annonce.findOne({
       attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
-      where: { 
+      where: {
         idRestoUser: annonceId,
         isActive: true,
         startHour: { gt: todayStart},
@@ -152,6 +154,7 @@ module.exports = {
       res.status(500).json({ 'error': 'cannot fetch annonce' });
     });
   },
+
   getAllAnnonces: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
@@ -164,12 +167,12 @@ module.exports = {
     todayEnd.setHours(23);
     todayEnd.setMinutes(59);
 
-    if (userId < 0)
-      return res.status(400).json({ 'error': 'wrong token' });
+    // if (userId < 0)
+    //   return res.status(400).json({ 'error': 'wrong token' });
 
     models.Annonce.findAll({
       attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
-      where: { 
+      where: {
         isActive: true,
         startHour: { gt: todayStart},
         endHour : {lt: todayEnd}
@@ -183,7 +186,9 @@ module.exports = {
     }).catch(function(err) {
       res.status(500).json({ 'error': 'cannot fetch annonces' });
     });
-  },updateAnnonce: function(req, res) {
+  },
+
+  updateAnnonce: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
@@ -235,7 +240,9 @@ module.exports = {
         return res.status(500).json({ 'error': 'cannot update annonce' });
       }
     });
-  },updateState: function(req, res) {
+  },
+
+  updateState: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
@@ -278,7 +285,9 @@ module.exports = {
         return res.status(500).json({ 'error': 'cannot update annonce' });
       }
     });
-  },updateImg: function(req, res) {
+  },
+
+  updateImg: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
@@ -321,18 +330,20 @@ module.exports = {
         return res.status(500).json({ 'error': 'cannot update annonce' });
       }
     });
-  }, getAnnonceByRestoAdmin: function(req, res) {
+  },
+
+  getAnnonceByRestoAdmin: function(req, res) {
     // Getting auth header
     var headerAuth  = req.headers['authorization'];
     var userId      = jwtUtils.getUserId(headerAuth);
     var annonceId = req.params.id;
 
-    if (userId != -100)
+    if (userId !== -100)
       return res.status(400).json({ 'error': 'wrong Admintoken' });
 
     models.Annonce.findOne({
       attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
-      where: { 
+      where: {
         idRestoUser: annonceId
        }
     }).then(function(annonce) {
