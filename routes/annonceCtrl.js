@@ -133,8 +133,8 @@ module.exports = {
     todayEnd.setMinutes(59);
     console.log(userId);
 
-    if (userId < 0 && userId != -100)
-      return res.status(400).json({ 'error': 'wrong token' });
+   /* if (userId < 0 && userId != -100)
+      return res.status(400).json({ 'error': 'wrong token' });*/
 
     models.Annonce.findOne({
       attributes: ['id', 'idRestoUser', 'desc', 'piUrl', 'price', 'startHour', 'endHour', 'qtite', 'isActive', 'updatedAt'],
